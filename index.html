@@ -190,7 +190,13 @@ body::before{
 .card .info{flex:1;min-width:0;}
 .card .name{
   font-size:15px;font-weight:650;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:6px;min-width:0;
+}
+.card .name .name-text{
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.card .name .hist-ico{
+  flex-shrink:0;color:#5b8cff;opacity:.7;
 }
 .card .meta{
   font-size:11.5px;color:var(--muted);margin-top:2.5px;font-weight:500;
@@ -401,6 +407,128 @@ body::before{
 }
 .btn-row{display:flex;gap:10px;margin-top:12px;}
 
+/* ---------- History: segmented range ---------- */
+.segment{
+  display:flex;gap:6px;padding:5px;border-radius:15px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  margin:18px 0 14px;
+}
+.segment button{
+  flex:1;padding:9px 4px;
+  border:none;border-radius:11px;
+  background:transparent;color:#8b97ad;
+  font-size:12px;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:.2s;white-space:nowrap;
+}
+.segment button.active{
+  background:rgba(91,140,255,.18);
+  color:#9ec0ff;
+  box-shadow:inset 0 0 0 1px rgba(91,140,255,.32);
+}
+.segment button:active{transform:scale(.95);}
+
+/* ---------- History: tally grid ---------- */
+.tally-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.tally{
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:12px 4px 10px;
+  text-align:center;
+}
+.tally b{
+  display:block;font-size:20px;font-weight:800;
+  letter-spacing:-.03em;line-height:1;
+}
+.tally span{
+  display:block;margin-top:5px;
+  font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.07em;font-weight:700;
+}
+.tally.present b{color:#4ade80;}
+.tally.half b{color:#fbbf24;}
+.tally.absent b{color:#f87171;}
+.tally.total b{color:#9ec0ff;}
+
+/* ---------- History: rate card ---------- */
+.rate-card{
+  margin-top:12px;padding:15px 15px 14px;
+  border-radius:17px;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line);
+}
+.rate-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:11px;
+}
+.rate-top span{
+  font-size:10.5px;color:var(--muted);font-weight:800;
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.rate-top strong{
+  font-size:22px;font-weight:800;letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;
+}
+.rate-bar{
+  height:9px;border-radius:99px;overflow:hidden;
+  background:rgba(255,255,255,.07);
+  display:flex;
+}
+.rate-bar i{
+  display:block;height:100%;width:0;
+  transition:width .45s cubic-bezier(.22,1,.36,1);
+}
+.rate-legend{
+  display:flex;gap:14px;margin-top:11px;
+  font-size:11px;color:var(--muted);font-weight:600;
+}
+.rate-legend span{display:flex;align-items:center;gap:5px;}
+.rate-legend i{
+  width:8px;height:8px;border-radius:50%;display:block;
+}
+
+/* ---------- History: list ---------- */
+.hist-list{margin-top:16px;}
+.hist-section{
+  font-size:10.5px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);
+  margin:0 0 10px 3px;
+}
+.hist-row{
+  display:flex;align-items:center;gap:11px;
+  padding:11px 13px;margin-bottom:8px;
+  border-radius:15px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  animation:rise .3s ease both;
+}
+.hist-badge{
+  width:38px;height:38px;flex-shrink:0;
+  border-radius:12px;
+  display:grid;place-items:center;
+  font-size:10px;font-weight:800;line-height:1.1;
+  text-align:center;letter-spacing:.02em;
+  border:1px solid rgba(255,255,255,.06);
+}
+.hist-badge small{display:block;font-size:8.5px;font-weight:700;opacity:.7;}
+.hist-body{flex:1;min-width:0;}
+.hist-body strong{
+  display:block;font-size:13.5px;font-weight:650;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hist-body span{
+  display:block;font-size:11px;color:var(--muted);margin-top:2.5px;
+  font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hist-body .why{color:#f0a3a3;font-style:italic;}
+.hist-row .pill{font-size:10px;padding:5px 9px;}
+
+/* ---------- Hide reason field ---------- */
+.hidden{display:none !important;}
+
 /* ---------- Toast ---------- */
 .toast{
   position:fixed;left:50%;
@@ -419,9 +547,6 @@ body::before{
   max-width:88vw;overflow:hidden;text-overflow:ellipsis;
 }
 .toast.show{opacity:1;transform:translate(-50%,0);}
-
-/* ---------- Hide reason field ---------- */
-.hidden{display:none !important;}
 </style>
 </head>
 <body>
@@ -490,7 +615,7 @@ body::before{
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
 
-<!-- Attendance sheet -->
+<!-- ============ ATTENDANCE SHEET ============ -->
 <div class="sheet" id="attSheet">
   <div class="handle"></div>
 
@@ -538,7 +663,7 @@ body::before{
   </div>
 </div>
 
-<!-- Employee sheet -->
+<!-- ============ EMPLOYEE SHEET ============ -->
 <div class="sheet" id="empSheet">
   <div class="handle"></div>
   <h2 class="sheet-title" id="empSheetTitle">Add Employee</h2>
@@ -560,6 +685,51 @@ body::before{
   <div class="btn-row">
     <button class="btn danger" id="deleteEmpBtn" style="flex:1">Delete Employee</button>
   </div>
+</div>
+
+<!-- ============ HISTORY / TALLY SHEET ============ -->
+<div class="sheet" id="historySheet">
+  <div class="handle"></div>
+
+  <div class="sheet-head">
+    <div class="avatar" id="histAvatar">—</div>
+    <div class="who">
+      <h2 id="histName">Employee</h2>
+      <p id="histRole">Employee</p>
+    </div>
+  </div>
+
+  <div class="segment" id="histSegment">
+    <button data-range="30">30 days</button>
+    <button data-range="month">This month</button>
+    <button data-range="all" class="active">All time</button>
+  </div>
+
+  <div class="tally-grid">
+    <div class="tally present"><b id="tPresent">0</b><span>Present</span></div>
+    <div class="tally half"><b id="tHalf">0</b><span>Half</span></div>
+    <div class="tally absent"><b id="tAbsent">0</b><span>Absent</span></div>
+    <div class="tally total"><b id="tTotal">0</b><span>Logged</span></div>
+  </div>
+
+  <div class="rate-card">
+    <div class="rate-top">
+      <span>Attendance rate</span>
+      <strong id="rateValue">—</strong>
+    </div>
+    <div class="rate-bar">
+      <i id="barPresent" style="background:linear-gradient(90deg,#22c55e,#4ade80)"></i>
+      <i id="barHalf" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></i>
+      <i id="barAbsent" style="background:linear-gradient(90deg,#ef4444,#f87171)"></i>
+    </div>
+    <div class="rate-legend">
+      <span><i style="background:#4ade80"></i>Present</span>
+      <span><i style="background:#fbbf24"></i>Half</span>
+      <span><i style="background:#f87171"></i>Absent</span>
+    </div>
+  </div>
+
+  <div class="hist-list" id="histList"></div>
 </div>
 
 <!-- Toast -->
@@ -627,6 +797,10 @@ body::before{
     for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
     return h;
   }
+  function avatarBg(name) {
+    const hue = hueOf(name);
+    return `linear-gradient(135deg, hsl(${hue} 52% 33%), hsl(${(hue + 48) % 360} 48% 20%))`;
+  }
 
   /* =========================================================
      Data layer
@@ -671,13 +845,15 @@ body::before{
   /* =========================================================
      App state
      ========================================================= */
-  let currentDate  = dateKey();
-  let searchQuery  = '';
-  let activeEmpId  = null;
-  let editingId    = null;
-  let pickedStatus = null;
-  let deleteArmed  = false;
-  let deleteTimer  = null;
+  let currentDate   = dateKey();
+  let searchQuery   = '';
+  let activeEmpId   = null;
+  let editingId     = null;
+  let pickedStatus  = null;
+  let deleteArmed   = false;
+  let deleteTimer   = null;
+  let historyEmpId  = null;
+  let historyRange  = 'all';
 
   /* =========================================================
      DOM refs
@@ -686,6 +862,7 @@ body::before{
   const overlay     = $('#overlay');
   const attSheet    = $('#attSheet');
   const empSheet    = $('#empSheet');
+  const historySheet= $('#historySheet');
   const toastEl     = $('#toast');
 
   const clockEl     = $('#clock');
@@ -706,6 +883,12 @@ body::before{
   const empNameIn     = $('#empName');
   const empRoleIn     = $('#empRole');
   const deleteEmpBtn  = $('#deleteEmpBtn');
+
+  const histAvatar  = $('#histAvatar');
+  const histName    = $('#histName');
+  const histRole    = $('#histRole');
+  const histSegment = $('#histSegment');
+  const histList    = $('#histList');
 
   /* =========================================================
      Toast
@@ -728,13 +911,13 @@ body::before{
   }
   function closeSheets() {
     overlay.classList.remove('open');
-    [attSheet, empSheet].forEach(s => s.classList.remove('open'));
+    [attSheet, empSheet, historySheet].forEach(s => s.classList.remove('open'));
     document.body.style.overflow = '';
   }
   overlay.addEventListener('click', closeSheets);
 
   /* =========================================================
-     Rendering
+     Rendering — main screen
      ========================================================= */
   function renderDate() {
     const today = dateKey();
@@ -802,7 +985,6 @@ body::before{
 
     listEl.innerHTML = emps.map((e, i) => {
       const rec = day[e.id];
-      const hue = hueOf(e.name);
       const st  = rec ? STATUS[rec.status] : null;
 
       const metaParts = [];
@@ -812,11 +994,19 @@ body::before{
 
       return `
         <article class="card" data-id="${e.id}" style="animation-delay:${Math.min(i * 26, 220)}ms">
-          <div class="avatar" style="background:linear-gradient(135deg, hsl(${hue} 52% 33%), hsl(${(hue + 48) % 360} 48% 20%))">
+          <div class="avatar" style="background:${avatarBg(e.name)}">
             ${esc(initials(e.name))}
           </div>
           <div class="info">
-            <div class="name">${esc(e.name)}</div>
+            <div class="name">
+              <span class="name-text">${esc(e.name)}</span>
+              <svg class="hist-ico" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="12" width="3.4" height="8" rx="1.2"/>
+                <rect x="10.3" y="7" width="3.4" height="13" rx="1.2"/>
+                <rect x="16.6" y="3" width="3.4" height="17" rx="1.2"/>
+              </svg>
+            </div>
             <div class="meta">${meta}</div>
             ${rec && rec.reason ? `<div class="reason">${esc(rec.reason)}</div>` : ''}
           </div>
@@ -852,9 +1042,7 @@ body::before{
     attName.textContent = emp.name;
     attRole.textContent = emp.role || 'Employee';
     attAvatar.textContent = initials(emp.name);
-    const hue = hueOf(emp.name);
-    attAvatar.style.background =
-      `linear-gradient(135deg, hsl(${hue} 52% 33%), hsl(${(hue + 48) % 360} 48% 20%))`;
+    attAvatar.style.background = avatarBg(emp.name);
 
     reasonInput.value = (rec && rec.reason) || '';
     timeInput.value = (rec && rec.time) || nowTime();
@@ -870,10 +1058,6 @@ body::before{
     pickedStatus = btn.dataset.status;
     if (pickedStatus !== 'absent') reasonInput.blur();
     updateStatusUI();
-  });
-
-  reasonInput.addEventListener('input', () => {
-    // nothing fancy — free text
   });
 
   $$('.chip', reasonField).forEach(chip => {
@@ -962,7 +1146,6 @@ body::before{
 
     if (!name) { toast('Please enter a name'); empNameIn.focus(); buzz(20); return; }
 
-    // Duplicate check
     const dup = db.employees.some(e =>
       e.name.toLowerCase() === name.toLowerCase() && e.id !== editingId);
     if (dup) { toast('That name already exists'); buzz(20); return; }
@@ -1015,11 +1198,150 @@ body::before{
   });
 
   /* =========================================================
-     Card tap → attendance
+     HISTORY / TALLY
+     ========================================================= */
+  function getHistory(empId, range) {
+    const ref = parseKey(currentDate);
+    const out = [];
+
+    Object.keys(db.records).forEach(dk => {
+      const day = db.records[dk];
+      if (!day || !day[empId]) return;
+
+      const d = parseKey(dk);
+      if (range === 'month') {
+        if (d.getFullYear() !== ref.getFullYear() || d.getMonth() !== ref.getMonth()) return;
+      } else if (range === '30') {
+        const diff = Math.round((ref - d) / 86400000);
+        if (diff < 0 || diff > 29) return;
+      }
+
+      out.push({ date: dk, ...day[empId] });
+    });
+
+    out.sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
+    return out;
+  }
+
+  function dateLabelFor(dk) {
+    const today = dateKey();
+    if (dk === today) return 'Today';
+    if (dk === shiftDate(today, -1)) return 'Yesterday';
+    return parseKey(dk).toLocaleDateString(undefined, {
+      weekday: 'short', month: 'short', day: 'numeric'
+    });
+  }
+
+  function renderHistory() {
+    const emp = db.employees.find(e => e.id === historyEmpId);
+    if (!emp) { closeSheets(); return; }
+
+    const recs = getHistory(historyEmpId, historyRange);
+
+    const c = { present: 0, half: 0, absent: 0 };
+    recs.forEach(r => { if (c[r.status] !== undefined) c[r.status]++; });
+    const total = recs.length;
+
+    $('#tPresent').textContent = c.present;
+    $('#tHalf').textContent    = c.half;
+    $('#tAbsent').textContent  = c.absent;
+    $('#tTotal').textContent   = total;
+
+    /* Attendance rate: Present = 1, Half Day = 0.5 */
+    const rate = total ? (c.present + c.half * 0.5) / total : 0;
+    $('#rateValue').textContent = total ? Math.round(rate * 100) + '%' : '—';
+
+    const pct = (n) => total ? (n / total) * 100 : 0;
+    $('#barPresent').style.width = pct(c.present) + '%';
+    $('#barHalf').style.width    = pct(c.half) + '%';
+    $('#barAbsent').style.width  = pct(c.absent) + '%';
+
+    /* Timeline list */
+    if (!total) {
+      histList.innerHTML = `
+        <div class="empty" style="padding:36px 12px 12px">
+          <div class="empty-icon">📅</div>
+          <h3>No records</h3>
+          <p>No attendance logged for this period.</p>
+        </div>`;
+      return;
+    }
+
+    const shown = recs.slice(0, 120);
+
+    histList.innerHTML = `
+      <p class="hist-section">Timeline · ${total} entr${total === 1 ? 'y' : 'ies'}</p>
+      ${shown.map((r, i) => {
+        const d = parseKey(r.date);
+        const dayNum = d.getDate();
+        const mon = d.toLocaleDateString(undefined, { month: 'short' });
+
+        const bits = [];
+        if (r.time) bits.push(formatTime(r.time));
+        const reasonHtml = r.reason
+          ? `<span class="why">${esc(r.reason)}</span>`
+          : '';
+
+        return `
+          <div class="hist-row" style="animation-delay:${Math.min(i * 20, 220)}ms">
+            <div class="hist-badge" style="background:${avatarBg(r.date)}">
+              <span>${dayNum}<small>${esc(mon)}</small></span>
+            </div>
+            <div class="hist-body">
+              <strong>${esc(dateLabelFor(r.date))}</strong>
+              <span>${bits.length ? esc(bits.join(' · ')) : 'No time recorded'}</span>
+              ${reasonHtml}
+            </div>
+            <span class="pill ${r.status}">${esc(STATUS[r.status].short)}</span>
+          </div>`;
+      }).join('')}
+      ${recs.length > shown.length
+        ? `<p class="hist-section" style="text-align:center;margin-top:12px">
+             Showing latest ${shown.length} of ${recs.length}
+           </p>`
+        : ''}
+    `;
+  }
+
+  function openHistory(id) {
+    const emp = db.employees.find(e => e.id === id);
+    if (!emp) return;
+
+    historyEmpId = id;
+    histName.textContent = emp.name;
+    histRole.textContent = emp.role || 'Employee';
+    histAvatar.textContent = initials(emp.name);
+    histAvatar.style.background = avatarBg(emp.name);
+
+    $$('button', histSegment).forEach(b =>
+      b.classList.toggle('active', b.dataset.range === historyRange));
+
+    renderHistory();
+    openSheet(historySheet);
+  }
+
+  histSegment.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button');
+    if (!btn) return;
+    historyRange = btn.dataset.range;
+    $$('button', histSegment).forEach(b => b.classList.toggle('active', b === btn));
+    buzz(5);
+    renderHistory();
+  });
+
+  /* =========================================================
+     Card taps → attendance (card) / history (name)
      ========================================================= */
   listEl.addEventListener('click', (ev) => {
     const card = ev.target.closest('.card');
     if (!card) return;
+    const nameEl = ev.target.closest('.name');
+
+    if (nameEl && card.contains(nameEl)) {
+      buzz(6);
+      openHistory(card.dataset.id);
+      return;
+    }
     buzz(6);
     openAttendance(card.dataset.id);
   });
@@ -1048,7 +1370,7 @@ body::before{
   });
 
   /* =========================================================
-     CSV export
+     CSV export (current day)
      ========================================================= */
   $('#exportBtn').addEventListener('click', () => {
     if (!db.employees.length) { toast('No employees to export'); return; }
