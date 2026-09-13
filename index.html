@@ -20,6 +20,7 @@
   --green:#22c55e;
   --amber:#f59e0b;
   --red:#ef4444;
+  --slate:#94a3b8;
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -117,27 +118,30 @@ body::before{
 .date-display strong{display:block;font-size:14.5px;font-weight:700;letter-spacing:-.01em;}
 .date-display span{display:block;font-size:11px;color:var(--muted);margin-top:1px;font-weight:500;}
 
-/* ---------- Stats ---------- */
+/* ---------- Stats (5 columns) ---------- */
 .stats{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
   margin-bottom:14px;
 }
 .stat{
   background:rgba(255,255,255,.035);
   border:1px solid var(--line);
-  border-radius:15px;
-  padding:11px 4px 9px;
+  border-radius:14px;
+  padding:10px 2px 8px;
   text-align:center;
+  min-width:0;
 }
-.stat b{display:block;font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.stat b{display:block;font-size:17px;font-weight:800;letter-spacing:-.04em;line-height:1;}
 .stat span{
-  display:block;margin-top:5px;
-  font-size:9px;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.07em;font-weight:700;
+  display:block;margin-top:4px;
+  font-size:8px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .stat.present b{color:#4ade80;}
 .stat.half b{color:#fbbf24;}
 .stat.absent b{color:#f87171;}
+.stat.nowork b{color:var(--slate);}
 .stat.unmarked b{color:#94a3b8;}
 
 /* ---------- Search ---------- */
@@ -194,6 +198,8 @@ body::before{
 }
 .card .name .name-text{
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-transform:uppercase;
+  letter-spacing:.02em;
 }
 .card .name .hist-ico{
   flex-shrink:0;color:#5b8cff;opacity:.7;
@@ -216,6 +222,7 @@ body::before{
 .pill.present{background:rgba(34,197,94,.15);color:#4ade80;}
 .pill.half{background:rgba(245,158,11,.15);color:#fbbf24;}
 .pill.absent{background:rgba(239,68,68,.15);color:#f87171;}
+.pill.nowork{background:rgba(148,163,184,.15);color:#cbd5e1;}
 .pill.none{background:rgba(255,255,255,.05);color:#5f6d82;}
 
 /* ---------- Empty ---------- */
@@ -276,8 +283,10 @@ body::before{
 .sheet-head .avatar{width:52px;height:52px;border-radius:17px;font-size:17px;}
 .sheet-head .who{flex:1;min-width:0;}
 .sheet-head h2{
-  margin:0;font-size:17.5px;font-weight:700;letter-spacing:-.02em;
+  margin:0;font-size:17.5px;font-weight:700;letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-transform:uppercase;
+  letter-spacing:.02em;
 }
 .sheet-head p{margin:3px 0 0;font-size:12.5px;color:var(--muted);font-weight:500;}
 .pencil{
@@ -292,24 +301,25 @@ body::before{
   margin:0 0 16px;font-size:17px;font-weight:750;letter-spacing:-.02em;
 }
 
-/* ---------- Status picker ---------- */
+/* ---------- Status picker (2x2 grid) ---------- */
 .status-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:9px;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:9px;
   margin:18px 0 4px;
 }
 .status-btn{
-  display:flex;flex-direction:column;align-items:center;gap:7px;
-  padding:14px 6px;border-radius:17px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 10px;border-radius:17px;
   border:1px solid var(--line);
   background:rgba(255,255,255,.03);
-  color:#98a5ba;font-size:12px;font-weight:700;
+  color:#98a5ba;font-size:12.5px;font-weight:700;
   font-family:inherit;cursor:pointer;
   transition:.2s;
 }
-.status-btn .dot{width:9px;height:9px;border-radius:50%;}
+.status-btn .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .status-btn[data-status="present"] .dot{background:var(--green);}
 .status-btn[data-status="half"] .dot{background:var(--amber);}
 .status-btn[data-status="absent"] .dot{background:var(--red);}
+.status-btn[data-status="nowork"] .dot{background:var(--slate);}
 .status-btn:active{transform:scale(.96);}
 .status-btn.active[data-status="present"]{
   background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.5);color:#4ade80;
@@ -322,6 +332,10 @@ body::before{
 .status-btn.active[data-status="absent"]{
   background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.5);color:#f87171;
   box-shadow:0 0 0 3px rgba(239,68,68,.08);
+}
+.status-btn.active[data-status="nowork"]{
+  background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.5);color:#cbd5e1;
+  box-shadow:0 0 0 3px rgba(148,163,184,.08);
 }
 
 /* ---------- Fields ---------- */
@@ -353,6 +367,9 @@ body::before{
   box-shadow:0 0 0 4px rgba(91,140,255,.09);
 }
 .field input::placeholder,.field textarea::placeholder{color:#5c6a80;}
+
+/* Auto-capslock name inputs */
+#empName, #attName, #histName{text-transform:uppercase;letter-spacing:.02em;}
 
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;}
 .chip{
@@ -428,29 +445,32 @@ body::before{
 }
 .segment button:active{transform:scale(.95);}
 
-/* ---------- History: tally grid ---------- */
+/* ---------- History: tally grid (5 cols) ---------- */
 .tally-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
 }
 .tally{
   background:rgba(255,255,255,.035);
   border:1px solid var(--line);
-  border-radius:15px;
-  padding:12px 4px 10px;
+  border-radius:14px;
+  padding:11px 2px 9px;
   text-align:center;
+  min-width:0;
 }
 .tally b{
-  display:block;font-size:20px;font-weight:800;
-  letter-spacing:-.03em;line-height:1;
+  display:block;font-size:18px;font-weight:800;
+  letter-spacing:-.04em;line-height:1;
 }
 .tally span{
-  display:block;margin-top:5px;
-  font-size:9px;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.07em;font-weight:700;
+  display:block;margin-top:4px;
+  font-size:8px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .tally.present b{color:#4ade80;}
 .tally.half b{color:#fbbf24;}
 .tally.absent b{color:#f87171;}
+.tally.nowork b{color:var(--slate);}
 .tally.total b{color:#9ec0ff;}
 
 /* ---------- History: rate card ---------- */
@@ -482,7 +502,7 @@ body::before{
   transition:width .45s cubic-bezier(.22,1,.36,1);
 }
 .rate-legend{
-  display:flex;gap:14px;margin-top:11px;
+  display:flex;flex-wrap:wrap;gap:12px;margin-top:11px;
   font-size:11px;color:var(--muted);font-weight:600;
 }
 .rate-legend span{display:flex;align-items:center;gap:5px;}
@@ -526,7 +546,7 @@ body::before{
 .hist-body .why{color:#f0a3a3;font-style:italic;}
 .hist-row .pill{font-size:10px;padding:5px 9px;}
 
-/* ---------- Hide reason field ---------- */
+/* ---------- Hide ---------- */
 .hidden{display:none !important;}
 
 /* ---------- Toast ---------- */
@@ -592,6 +612,7 @@ body::before{
       <div class="stat present"><b id="cPresent">0</b><span>Present</span></div>
       <div class="stat half"><b id="cHalf">0</b><span>Half</span></div>
       <div class="stat absent"><b id="cAbsent">0</b><span>Absent</span></div>
+      <div class="stat nowork"><b id="cNoWork">0</b><span>No Work</span></div>
       <div class="stat unmarked"><b id="cUnmarked">0</b><span>Unmarked</span></div>
     </div>
 
@@ -638,6 +659,7 @@ body::before{
     <button class="status-btn" data-status="present"><span class="dot"></span>Present</button>
     <button class="status-btn" data-status="half"><span class="dot"></span>Half Day</button>
     <button class="status-btn" data-status="absent"><span class="dot"></span>Absent</button>
+    <button class="status-btn" data-status="nowork"><span class="dot"></span>No Work</button>
   </div>
 
   <div class="field hidden" id="reasonField">
@@ -652,7 +674,7 @@ body::before{
     </div>
   </div>
 
-  <div class="field">
+  <div class="field" id="timeField">
     <label>Timestamp</label>
     <input type="time" id="timeInput">
   </div>
@@ -670,7 +692,8 @@ body::before{
 
   <div class="field" style="margin-top:0">
     <label>Full name</label>
-    <input id="empName" type="text" placeholder="e.g. Juan Dela Cruz" autocomplete="off">
+    <input id="empName" type="text" placeholder="e.g. JUAN DELA CRUZ"
+           autocomplete="off" autocapitalize="characters" spellcheck="false">
   </div>
 
   <div class="field">
@@ -709,7 +732,8 @@ body::before{
     <div class="tally present"><b id="tPresent">0</b><span>Present</span></div>
     <div class="tally half"><b id="tHalf">0</b><span>Half</span></div>
     <div class="tally absent"><b id="tAbsent">0</b><span>Absent</span></div>
-    <div class="tally total"><b id="tTotal">0</b><span>Logged</span></div>
+    <div class="tally nowork"><b id="tNoWork">0</b><span>No Work</span></div>
+    <div class="tally total"><b id="tTotal">0</b><span>Total</span></div>
   </div>
 
   <div class="rate-card">
@@ -721,12 +745,17 @@ body::before{
       <i id="barPresent" style="background:linear-gradient(90deg,#22c55e,#4ade80)"></i>
       <i id="barHalf" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></i>
       <i id="barAbsent" style="background:linear-gradient(90deg,#ef4444,#f87171)"></i>
+      <i id="barNoWork" style="background:linear-gradient(90deg,#64748b,#94a3b8)"></i>
     </div>
     <div class="rate-legend">
       <span><i style="background:#4ade80"></i>Present</span>
       <span><i style="background:#fbbf24"></i>Half</span>
       <span><i style="background:#f87171"></i>Absent</span>
+      <span><i style="background:#94a3b8"></i>No Work</span>
     </div>
+    <p style="margin:10px 0 0;font-size:10.5px;color:#8b97ad;line-height:1.4">
+      Rate excludes <strong style="color:#cbd5e1">No Work</strong> days from the denominator.
+    </p>
   </div>
 
   <div class="hist-list" id="histList"></div>
@@ -756,7 +785,8 @@ body::before{
   const STATUS = {
     present: { label: 'Present',  short: 'Present'  },
     half:    { label: 'Half Day', short: 'Half Day' },
-    absent:  { label: 'Absent',   short: 'Absent'   }
+    absent:  { label: 'Absent',   short: 'Absent'   },
+    nowork:  { label: 'No Work',  short: 'No Work'  }
   };
 
   /* ---- Date helpers ---- */
@@ -877,6 +907,7 @@ body::before{
   const statusGrid  = $('#statusGrid');
   const reasonField = $('#reasonField');
   const reasonInput = $('#reasonInput');
+  const timeField   = $('#timeField');
   const timeInput   = $('#timeInput');
 
   const empSheetTitle = $('#empSheetTitle');
@@ -938,18 +969,20 @@ body::before{
 
   function renderStats() {
     const day = db.records[currentDate] || {};
-    let p = 0, h = 0, a = 0;
+    let p = 0, h = 0, a = 0, n = 0;
     db.employees.forEach(e => {
       const r = day[e.id];
       if (!r) return;
       if (r.status === 'present') p++;
       else if (r.status === 'half') h++;
       else if (r.status === 'absent') a++;
+      else if (r.status === 'nowork') n++;
     });
-    const un = Math.max(0, db.employees.length - p - h - a);
+    const un = Math.max(0, db.employees.length - p - h - a - n);
     $('#cPresent').textContent  = p;
     $('#cHalf').textContent     = h;
     $('#cAbsent').textContent   = a;
+    $('#cNoWork').textContent   = n;
     $('#cUnmarked').textContent = un;
   }
 
@@ -987,10 +1020,14 @@ body::before{
       const rec = day[e.id];
       const st  = rec ? STATUS[rec.status] : null;
 
-      const metaParts = [];
-      if (e.role) metaParts.push(esc(e.role));
-      if (rec && rec.time) metaParts.push(esc(formatTime(rec.time)));
-      const meta = metaParts.length ? metaParts.join(' · ') : 'Not marked';
+      const parts = [];
+      if (e.role) parts.push(esc(e.role));
+      if (rec && rec.time && rec.status !== 'nowork') parts.push(esc(formatTime(rec.time)));
+
+      let meta;
+      if (parts.length) meta = parts.join(' · ');
+      else if (rec && rec.status === 'nowork') meta = 'No work day';
+      else meta = 'Not marked';
 
       return `
         <article class="card" data-id="${e.id}" style="animation-delay:${Math.min(i * 26, 220)}ms">
@@ -1029,6 +1066,8 @@ body::before{
       btn.classList.toggle('active', btn.dataset.status === pickedStatus);
     });
     reasonField.classList.toggle('hidden', pickedStatus !== 'absent');
+    // Hide timestamp for No Work — the day isn't worked, so no time is meaningful.
+    timeField.classList.toggle('hidden', pickedStatus === 'nowork');
   }
 
   function openAttendance(id) {
@@ -1073,10 +1112,11 @@ body::before{
     if (!activeEmpId) return;
     if (!pickedStatus) { toast('Select a status first'); buzz(20); return; }
 
-    const rec = {
-      status: pickedStatus,
-      time: timeInput.value || nowTime()
-    };
+    const rec = { status: pickedStatus };
+
+    if (pickedStatus !== 'nowork') {
+      rec.time = timeInput.value || nowTime();
+    }
     if (pickedStatus === 'absent') {
       const r = reasonInput.value.trim();
       if (r) rec.reason = r;
@@ -1086,7 +1126,7 @@ body::before{
     buzz(14);
     closeSheets();
     render();
-    toast(`${STATUS[pickedStatus].label} saved · ${formatTime(rec.time)}`);
+    toast(`${STATUS[pickedStatus].label} saved` + (rec.time ? ` · ${formatTime(rec.time)}` : ''));
   });
 
   $('#clearAttBtn').addEventListener('click', () => {
@@ -1130,6 +1170,18 @@ body::before{
     if (!emp) setTimeout(() => empNameIn.focus(), 380);
   }
 
+  /* Live uppercasing for the name input (keeps cursor position stable) */
+  empNameIn.addEventListener('input', () => {
+    const el = empNameIn;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const upper = el.value.toUpperCase();
+    if (upper !== el.value) {
+      el.value = upper;
+      try { el.setSelectionRange(start, end); } catch (e) {}
+    }
+  });
+
   $('#addBtn').addEventListener('click', () => {
     buzz(8);
     openEmployeeSheet(null);
@@ -1141,7 +1193,7 @@ body::before{
   });
 
   $('#saveEmpBtn').addEventListener('click', () => {
-    const name = empNameIn.value.trim();
+    const name = empNameIn.value.trim().toUpperCase();
     const role = empRoleIn.value.trim();
 
     if (!name) { toast('Please enter a name'); empNameIn.focus(); buzz(20); return; }
@@ -1238,23 +1290,28 @@ body::before{
 
     const recs = getHistory(historyEmpId, historyRange);
 
-    const c = { present: 0, half: 0, absent: 0 };
+    const c = { present: 0, half: 0, absent: 0, nowork: 0 };
     recs.forEach(r => { if (c[r.status] !== undefined) c[r.status]++; });
     const total = recs.length;
 
     $('#tPresent').textContent = c.present;
     $('#tHalf').textContent    = c.half;
     $('#tAbsent').textContent  = c.absent;
+    $('#tNoWork').textContent  = c.nowork;
     $('#tTotal').textContent   = total;
 
-    /* Attendance rate: Present = 1, Half Day = 0.5 */
-    const rate = total ? (c.present + c.half * 0.5) / total : 0;
-    $('#rateValue').textContent = total ? Math.round(rate * 100) + '%' : '—';
+    /* Attendance rate: Present = 1, Half Day = 0.5.
+       No Work days are excluded from the denominator (they aren't workdays). */
+    const workDays = c.present + c.half + c.absent;
+    const rate = workDays ? (c.present + c.half * 0.5) / workDays : 0;
+    $('#rateValue').textContent = workDays ? Math.round(rate * 100) + '%' : '—';
 
+    /* Bar shows how all logged entries break down (including No Work). */
     const pct = (n) => total ? (n / total) * 100 : 0;
     $('#barPresent').style.width = pct(c.present) + '%';
     $('#barHalf').style.width    = pct(c.half) + '%';
     $('#barAbsent').style.width  = pct(c.absent) + '%';
+    $('#barNoWork').style.width  = pct(c.nowork) + '%';
 
     /* Timeline list */
     if (!total) {
@@ -1277,10 +1334,14 @@ body::before{
         const mon = d.toLocaleDateString(undefined, { month: 'short' });
 
         const bits = [];
-        if (r.time) bits.push(formatTime(r.time));
+        if (r.time && r.status !== 'nowork') bits.push(formatTime(r.time));
         const reasonHtml = r.reason
           ? `<span class="why">${esc(r.reason)}</span>`
           : '';
+
+        const sub = bits.length
+          ? esc(bits.join(' · '))
+          : (r.status === 'nowork' ? 'No work scheduled' : 'No time recorded');
 
         return `
           <div class="hist-row" style="animation-delay:${Math.min(i * 20, 220)}ms">
@@ -1289,7 +1350,7 @@ body::before{
             </div>
             <div class="hist-body">
               <strong>${esc(dateLabelFor(r.date))}</strong>
-              <span>${bits.length ? esc(bits.join(' · ')) : 'No time recorded'}</span>
+              <span>${sub}</span>
               ${reasonHtml}
             </div>
             <span class="pill ${r.status}">${esc(STATUS[r.status].short)}</span>
