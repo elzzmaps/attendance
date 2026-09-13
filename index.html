@@ -213,6 +213,7 @@ body::before{
   font-size:11px;color:#f0a3a3;margin-top:3px;font-style:italic;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
+.card .reason.slate{color:#cbd5e1;}
 .pill{
   flex-shrink:0;
   font-size:10.5px;font-weight:800;
@@ -544,6 +545,7 @@ body::before{
   font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .hist-body .why{color:#f0a3a3;font-style:italic;}
+.hist-body .why.slate{color:#cbd5e1;}
 .hist-row .pill{font-size:10px;padding:5px 9px;}
 
 /* ---------- Hide ---------- */
@@ -662,6 +664,7 @@ body::before{
     <button class="status-btn" data-status="nowork"><span class="dot"></span>No Work</button>
   </div>
 
+  <!-- Absent reason -->
   <div class="field hidden" id="reasonField">
     <label>Reason for absence</label>
     <textarea id="reasonInput" placeholder="e.g. Sick leave, family emergency…"></textarea>
@@ -671,6 +674,19 @@ body::before{
       <button class="chip" data-reason="Family emergency">Emergency</button>
       <button class="chip" data-reason="Personal reasons">Personal</button>
       <button class="chip" data-reason="Official business">Official</button>
+    </div>
+  </div>
+
+  <!-- No Work note -->
+  <div class="field hidden" id="noworkField">
+    <label>Note for no work</label>
+    <textarea id="noworkInput" placeholder="e.g. Public holiday, company event…"></textarea>
+    <div class="chips">
+      <button class="chip" data-nowork="Public holiday">Holiday</button>
+      <button class="chip" data-nowork="Company event">Company event</button>
+      <button class="chip" data-nowork="Suspension of work">Suspension</button>
+      <button class="chip" data-nowork="Bad weather / calamity">Weather</button>
+      <button class="chip" data-nowork="Rest day / off day">Rest day</button>
     </div>
   </div>
 
@@ -907,6 +923,8 @@ body::before{
   const statusGrid  = $('#statusGrid');
   const reasonField = $('#reasonField');
   const reasonInput = $('#reasonInput');
+  const noworkField = $('#noworkField');
+  const noworkInput = $('#noworkInput');
   const timeField   = $('#timeField');
   const timeInput   = $('#timeInput');
 
@@ -1029,6 +1047,8 @@ body::before{
       else if (rec && rec.status === 'nowork') meta = 'No work day';
       else meta = 'Not marked';
 
+      const reasonClass = rec && rec.status === 'nowork' ? 'reason slate' : 'reason';
+
       return `
         <article class="card" data-id="${e.id}" style="animation-delay:${Math.min(i * 26, 220)}ms">
           <div class="avatar" style="background:${avatarBg(e.name)}">
@@ -1045,7 +1065,7 @@ body::before{
               </svg>
             </div>
             <div class="meta">${meta}</div>
-            ${rec && rec.reason ? `<div class="reason">${esc(rec.reason)}</div>` : ''}
+            ${rec && rec.reason ? `<div class="${reasonClass}">${esc(rec.reason)}</div>` : ''}
           </div>
           <span class="pill ${rec ? rec.status : 'none'}">${rec ? esc(st.short) : '—'}</span>
         </article>`;
@@ -1066,6 +1086,7 @@ body::before{
       btn.classList.toggle('active', btn.dataset.status === pickedStatus);
     });
     reasonField.classList.toggle('hidden', pickedStatus !== 'absent');
+    noworkField.classList.toggle('hidden', pickedStatus !== 'nowork');
     // Hide timestamp for No Work — the day isn't worked, so no time is meaningful.
     timeField.classList.toggle('hidden', pickedStatus === 'nowork');
   }
@@ -1083,7 +1104,10 @@ body::before{
     attAvatar.textContent = initials(emp.name);
     attAvatar.style.background = avatarBg(emp.name);
 
+    /* Both note textareas are populated from the same record.reason so the
+       correct one shows the note if the user switches status. */
     reasonInput.value = (rec && rec.reason) || '';
+    noworkInput.value = (rec && rec.reason) || '';
     timeInput.value = (rec && rec.time) || nowTime();
 
     updateStatusUI();
@@ -1096,14 +1120,26 @@ body::before{
     buzz(6);
     pickedStatus = btn.dataset.status;
     if (pickedStatus !== 'absent') reasonInput.blur();
+    if (pickedStatus !== 'nowork') noworkInput.blur();
     updateStatusUI();
   });
 
+  /* Absent chips */
   $$('.chip', reasonField).forEach(chip => {
     chip.addEventListener('click', () => {
       const val = chip.dataset.reason;
       const cur = reasonInput.value.trim();
       reasonInput.value = cur ? (cur.includes(val) ? cur : cur + '; ' + val) : val;
+      buzz(5);
+    });
+  });
+
+  /* No Work chips */
+  $$('.chip', noworkField).forEach(chip => {
+    chip.addEventListener('click', () => {
+      const val = chip.dataset.nowork;
+      const cur = noworkInput.value.trim();
+      noworkInput.value = cur ? (cur.includes(val) ? cur : cur + '; ' + val) : val;
       buzz(5);
     });
   });
@@ -1119,6 +1155,9 @@ body::before{
     }
     if (pickedStatus === 'absent') {
       const r = reasonInput.value.trim();
+      if (r) rec.reason = r;
+    } else if (pickedStatus === 'nowork') {
+      const r = noworkInput.value.trim();
       if (r) rec.reason = r;
     }
 
@@ -1335,8 +1374,11 @@ body::before{
 
         const bits = [];
         if (r.time && r.status !== 'nowork') bits.push(formatTime(r.time));
+
+        /* Reason styling differs for No Work (neutral slate) vs Absent (red) */
+        const whyClass = r.status === 'nowork' ? 'why slate' : 'why';
         const reasonHtml = r.reason
-          ? `<span class="why">${esc(r.reason)}</span>`
+          ? `<span class="${whyClass}">${esc(r.reason)}</span>`
           : '';
 
         const sub = bits.length
@@ -1437,7 +1479,7 @@ body::before{
     if (!db.employees.length) { toast('No employees to export'); return; }
 
     const day = db.records[currentDate] || {};
-    const rows = [['Date', 'Name', 'Position', 'Status', 'Time', 'Reason']];
+    const rows = [['Date', 'Name', 'Position', 'Status', 'Time', 'Note / Reason']];
 
     db.employees
       .slice()
